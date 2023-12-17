@@ -3,16 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <title>Home</title>
 </head>
 <body>
-    <h1>Users:</h1>
-    <ul>
-        {{#each users}}
-            {{#dataValues}}
-                <li>{{email}} - {{full_name}}</li>
-            {{/dataValues}}
-        {{/each}}
-    </ul>
+    <div id="mqttData">
+        <p>Nhịp tim: <span id="heartRate"></span></p>
+        <p>Nhiệt độ cơ thể: <span id="temperature"></span></p>
+        <p>SpO2: <span id="spo2"></span></p>
+    </div>
+    <div class="d-flex flex-row px-3">
+        <div class="col-3" id="heartRateChart" ></div>
+        <div class="offset-1 col-3" id="temperatureChart"></div>
+        <div class="offset-1 col-3" id="spo2Chart"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.2.0/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        // Initialize empty arrays to store data for each parameter
+        const heartRateData = [];
+        const temperatureData = [];
+        const spo2Data = [];
+
+        const createChart = (chartId, series, yAxisLabel) => {
+            return new ApexCharts(document.getElementById(chartId), {
+                series: [{
+                    name: yAxisLabel,
+                    data: series
+                }],
+                chart: {
+                    type: 'line',
+                    height: 350,
+                    toolbar: {
+                        show: false,
+                    }
+                },
+                xaxis: {
+                    type: 'datetime',
+                    labels: {
+                        formatter: function (value, timestamp) {
+                            const date = new Date(value);
+                            return date.toLocaleTimeString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' });
+                        }
+                    }
+                },
+                stroke: {
+                    curve: 'straight',
+                    width: 2
+                },
+                markers: {
+                    size: 4,
+                },
+                yaxis: {
+                    title: {
+                        text: yAxisLabel,
+                    },
+                },
+            });
+        };
+
+        const heartRateChart = createChart('heartRateChart', heartRateData, 'Nhịp tim');
+        const temperatureChart = createChart('temperatureChart', temperatureData, 'Nhiệt độ (⁰C)');
+        const spo2Chart = createChart('spo2Chart', spo2Data, 'SpO2');
+
+        heartRateChart.render();
+        temperatureChart.render();
+        spo2Chart.render();
+
+        socket.on('mqttData', (data) => {
+            // Update values on the HTML page
+            document.getElementById('heartRate').innerText = data.heartrate || 'N/A';
+            document.getElementById('temperature').innerText = data.temperature || 'N/A';
+            document.getElementById('spo2').innerText = data.sp02 || 'N/A';
+
+            // Add new data to the arrays
+            const timestamp = new Date().getTime();
+            heartRateData.push({ x: timestamp, y: data.heartrate || null });
+            temperatureData.push({ x: timestamp, y: data.temperature || null });
+            spo2Data.push({ x: timestamp, y: data.sp02 || null });
+
+            // Limit the number of data points to display (adjust as needed)
+            const maxDataPoints = 10;
+            if (heartRateData.length > maxDataPoints) {
+                heartRateData.shift(); // Remove the oldest data point
+                temperatureData.shift();
+                spo2Data.shift();
+            }
+
+            // Update the charts with the new data
+            heartRateChart.updateSeries([{ data: heartRateData }]);
+            temperatureChart.updateSeries([{ data: temperatureData }]);
+            spo2Chart.updateSeries([{ data: spo2Data }]);
+        });
+    </script>
 </body>
 </html>
