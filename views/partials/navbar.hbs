@@ -1,8 +1,10 @@
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #22a0bb!important;">
   <div class="container">
-    <a class="navbar-brand" href="/">Dự đoán sức khoẻ</a>
-  
+    <a class="navbar-brand" href="/">Trang chủ</a>
+    {{#if session.user}}
+      <a class="ms-5 navbar-brand" href="/predict">Dự đoán sức khoẻ</a>
+    {{/if}}
     <div class="collapse navbar-collapse d-flex justify-content-end " id="navbarNav">
       <ul class="navbar-nav ml-auto">
         {{#if session.user}}

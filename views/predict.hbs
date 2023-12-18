@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <title>Predict</title>
+</head>
+<body>
+    <h1 class="mb-2">Thông số về sức khoẻ</h1>
+    <div id="mqttData" class="d-flex flex-row justify-content-between " >
+        <p>Nhịp tim: <span id="heartRate"></span></p>
+        <p>Nhiệt độ cơ thể: <span id="temperature"></span></p>
+        <p>SpO2: <span id="spo2"></span></p>
+    </div>
+    <form>
+        <div class="row">
+            <div class="col-12 col-sm-12  col-md-3 mx-md-auto border border-primary rounded p-3">
+                <div class="text-center">Lần đo 1</div>
+                <div>Kết quả</div>
+                <ul>
+                    <li>Nhịp tim: 90</li>
+                    <li>Nhiệt độ cơ thể: 35.50 <sup>o</sup>C</li>
+                    <li>SpO2: 95%</li>
+                </ul>
+                
+            </div>
+            <div class="col-12 col-sm-12 col-md-3 mx-md-auto border border-primary rounded p-3">
+                <div class="text-center">Lần đo 2</div>
+                <div>Kết quả</div>
+                <ul>
+                    <li>Nhịp tim: 90</li>
+                    <li>Nhiệt độ cơ thể: 35.50 <sup>o</sup>C</li>
+                    <li>SpO2: 95%</li>
+                </ul>
+                {{!-- <div class="d-flex justify-content-center ">
+                    <a class="btn btn btn-success text-center">Đo lần 2</a>
+                </div> --}}
+                
+            </div>
+            <div class="col-12 col-sm-12 col-md-3 mx-md-auto border border-primary rounded p-3">
+                <div class="text-center">Lần đo 3</div>
+                <div>Kết quả</div>
+                <ul>
+                    <li>Nhịp tim: 90</li>
+                    <li>Nhiệt độ cơ thể: 35.50 <sup>o</sup>C</li>
+                    <li>SpO2: 95%</li>
+                </ul>  
+                    
+                    {{!-- <div class="d-flex justify-content-center ">
+                        <a class="btn btn btn-success text-center">Đo lần 3</a>
+                    </div> --}}
+            </div>
+        </div>
+        <div class="d-flex justify-content-center mt-4">
+            <button type="submit" class="btn btn-primary">Dự đoán sức khoẻ</button>
+        </div>
+        
+        <h4 class="text-center mt-5">Xin chia buồn tình trạng sức khoẻ của bạn là Đau tim 💔</h4>
+    </form>
+    
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.2.0/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        socket.on('mqttData', (data) => {
+            // Update values on the HTML page
+            document.getElementById('heartRate').innerText = data.heartrate || 'N/A';
+            document.getElementById('temperature').innerText = data.temperature || 'N/A';
+            document.getElementById('spo2').innerText = data.sp02 || 'N/A';
+        });
+    </script>
+</body>
+</html>

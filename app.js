@@ -9,10 +9,14 @@ const sequelize = require("./configs/connection");
 
 const userController = require('./controllers/authController');
 const auth = require('./middlewares/auth');
+const { indexPredict } = require('./controllers/predictController');
 
 
 const app = express();
 const PORT = process.env.PORT || 8080;
+
+// sử dụng public folder để lấy hình ảnh
+app.use(express.static('public'));
 
 const server = http.createServer(app); // Tạo một server http từ Express app
 const io = socketIo(server); // Gắn Socket.IO vào server http
@@ -43,11 +47,6 @@ mqttClient.on('message', (topic, message) => {
         const sp02 = parseFloat(dataValues[1]).toFixed(2);
         const temperature = parseFloat(dataValues[2]).toFixed(2);
 
-        // Hiển thị dữ liệu trong console
-        console.log('Heart Rate:', heartrate);
-        console.log('SpO2:', sp02);
-        console.log('Temperature:', temperature);
-
         // Gửi dữ liệu tới tất cả các clients thông qua Socket.IO (nếu cần)
         io.emit('mqttData', { heartrate, sp02, temperature });
     } else {
@@ -58,9 +57,9 @@ mqttClient.on('message', (topic, message) => {
 
 // Khi kết nối WebSocket
 io.on('connection', (socket) => {
-	console.log('Client connected');
+	console.log('Client connected to websocket');
 	// Có thể thực hiện các tác vụ khác nếu cần
-  });
+});
 
 app.use(session({
    secret: 'your-secret-key',
@@ -95,6 +94,7 @@ app.post('/login', userController.postLogin);
 app.get('/signup', userController.getSignUp);
 app.post('/signup', userController.postSignUp);
 app.get('/logout', userController.getLogout);
+app.get('/predict', auth, indexPredict);
 
 app.get('/test', auth, (req, res) => {
    res.send('Trang test, chỉ được truy cập nếu đã đăng nhập');
