@@ -13,51 +13,94 @@
         <p>Nhiệt độ cơ thể: <span id="temperature"></span></p>
         <p>SpO2: <span id="spo2"></span></p>
     </div>
-    <form>
+    
         <div class="row">
             <div class="col-12 col-sm-12  col-md-3 mx-md-auto border border-primary rounded p-3">
                 <div class="text-center">Lần đo 1</div>
-                <div>Kết quả</div>
-                <ul>
-                    <li>Nhịp tim: 90</li>
-                    <li>Nhiệt độ cơ thể: 35.50 <sup>o</sup>C</li>
-                    <li>SpO2: 95%</li>
-                </ul>
+                {{#with healthData}}
+                    {{#if dataValues}}
+                        {{#if dataValues.heart_rate_1}}
+                            <div>Kết quả</div>
+                            <ul>
+                                <li>Nhịp tim: {{dataValues.heart_rate_1}} bpm</li>
+                                <li>Nhiệt độ cơ thể: {{ dataValues.temperature_1}} <sup>o</sup>C</li>
+                                <li>SpO2: {{ dataValues.spo2_1}}%</li>
+                            </ul>
+                        {{else}}
+                            <div class="d-flex justify-content-center ">
+                                <button class="btn btn btn-success text-center" onclick="measure(1)">Đo lần 1</button>
+                            </div>
+                        {{/if}}
+                    {{else}}
+                        <div class="d-flex justify-content-center ">
+                            <button class="btn btn btn-success text-center" onclick="measure(1)">Đo lần 1</button>
+                        </div>
+                    {{/if}}
+                {{/with}}
                 
             </div>
             <div class="col-12 col-sm-12 col-md-3 mx-md-auto border border-primary rounded p-3">
                 <div class="text-center">Lần đo 2</div>
-                <div>Kết quả</div>
-                <ul>
-                    <li>Nhịp tim: 90</li>
-                    <li>Nhiệt độ cơ thể: 35.50 <sup>o</sup>C</li>
-                    <li>SpO2: 95%</li>
-                </ul>
-                {{!-- <div class="d-flex justify-content-center ">
-                    <a class="btn btn btn-success text-center">Đo lần 2</a>
-                </div> --}}
+                {{#with healthData}}
+                    {{#if dataValues}}
+                        {{#if dataValues.heart_rate_2}}
+                            <div>Kết quả</div>
+                            <ul>
+                                <li>Nhịp tim: {{dataValues.heart_rate_2}} bpm</li>
+                                <li>Nhiệt độ cơ thể: {{ dataValues.temperature_2}} <sup>o</sup>C</li>
+                                <li>SpO2: {{ dataValues.spo2_2}}%</li>
+                            </ul>
+                            {{else}}
+                            <div class="d-flex justify-content-center ">
+                            <button class="btn btn btn-success text-center" onclick="measure(2)">Đo lần 2</button>
+                            </div>
+                        {{/if}}    
+                    {{/if}}
+                {{/with}}
                 
             </div>
             <div class="col-12 col-sm-12 col-md-3 mx-md-auto border border-primary rounded p-3">
                 <div class="text-center">Lần đo 3</div>
-                <div>Kết quả</div>
-                <ul>
-                    <li>Nhịp tim: 90</li>
-                    <li>Nhiệt độ cơ thể: 35.50 <sup>o</sup>C</li>
-                    <li>SpO2: 95%</li>
-                </ul>  
-                    
-                    {{!-- <div class="d-flex justify-content-center ">
-                        <a class="btn btn btn-success text-center">Đo lần 3</a>
-                    </div> --}}
+                {{#with healthData}}
+                    {{#if dataValues}}
+                        {{#if dataValues.heart_rate_3 }}
+                            <div>Kết quả</div>
+                            <ul>
+                                <li>Nhịp tim: {{dataValues.heart_rate_3}} bpm</li>
+                                <li>Nhiệt độ cơ thể: {{ dataValues.temperature_3}} <sup>o</sup>C</li>
+                                <li>SpO2: {{ dataValues.spo2_3}}%</li>
+                            </ul>
+                            {{else}}
+                            <div class="d-flex justify-content-center ">
+                            <button class="btn btn btn-success text-center" onclick="measure(3)">Đo lần 3</button>
+                            </div>
+                        {{/if}}    
+                    {{/if}}
+                {{/with}}
             </div>
         </div>
         <div class="d-flex justify-content-center mt-4">
-            <button type="submit" class="btn btn-primary">Dự đoán sức khoẻ</button>
+            <button class="btn btn-warning" onclick="resetMeasurements()">Reset Tất Cả</button>
         </div>
+        {{#with healthData}}
+            {{#if dataValues}}
+                {{#if dataValues.heart_rate_1}}
+                    {{#if dataValues.heart_rate_2}}
+                        {{#if dataValues.heart_rate_3}}
+                            <form>
+                                <div class="d-flex justify-content-center mt-4">
+                                    <button type="submit" class="btn btn-primary">Dự đoán sức khoẻ</button>
+                                </div>
+                            </form>
+                        {{/if}}  
+                    {{/if}}  
+                {{/if}}  
+            {{/if}}
+        {{/with}}
+        
         
         <h4 class="text-center mt-5">Xin chia buồn tình trạng sức khoẻ của bạn là Đau tim 💔</h4>
-    </form>
+    
     
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.2.0/socket.io.js"></script>
@@ -70,6 +113,67 @@
             document.getElementById('temperature').innerText = data.temperature || 'N/A';
             document.getElementById('spo2').innerText = data.sp02 || 'N/A';
         });
+
+        function measure(measurementNumber) {
+            
+        // You can include the CSRF token if your application uses it
+        // const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+
+        // You need to fetch the data from your HTML elements
+        const heartRate = document.getElementById('heartRate').innerText;
+        const temperature = document.getElementById('temperature').innerText;
+        const spo2 = document.getElementById('spo2').innerText;
+
+        // Prepare the data to be sent in the request body
+        const data = {
+            measurementNumber,
+            heartRate,
+            temperature,
+            spo2,
+        };
+
+        {{!-- console.log(data); --}}
+
+        // Make a POST request using fetch to your server-side route
+        fetch('/measurements', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+        .then(response => response.json())
+        .then(result => {
+            // Handle the result if needed
+            console.log(result);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+        window.location.reload();
+    }
+
+    function resetMeasurements() {
+            // Your logic to reset all measurements, you can make a request to your server to handle this
+            // Example:
+            fetch('/resetMeasurements', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(result => {
+                // Handle the result if needed
+                console.log(result);
+                
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+            window.location.reload();
+        }
     </script>
 </body>
 </html>

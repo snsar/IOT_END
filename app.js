@@ -9,7 +9,7 @@ const sequelize = require("./configs/connection");
 
 const userController = require('./controllers/authController');
 const auth = require('./middlewares/auth');
-const { indexPredict } = require('./controllers/predictController');
+const { indexPredict, saveMeasurement, resetMeasurements } = require('./controllers/predictController');
 
 
 const app = express();
@@ -21,7 +21,7 @@ app.use(express.static('public'));
 const server = http.createServer(app); // Tạo một server http từ Express app
 const io = socketIo(server); // Gắn Socket.IO vào server http
 
-const mqttClient = mqtt.connect('mqtt://192.168.8.101');
+const mqttClient = mqtt.connect(process.env.MQTTIP);
 
 mqttClient.on('connect', () => {
 	console.log('Connected to MQTT broker');
@@ -95,6 +95,8 @@ app.get('/signup', userController.getSignUp);
 app.post('/signup', userController.postSignUp);
 app.get('/logout', userController.getLogout);
 app.get('/predict', auth, indexPredict);
+app.post('/measurements', auth, saveMeasurement);
+app.post('/resetMeasurements', auth, resetMeasurements)
 
 app.get('/test', auth, (req, res) => {
    res.send('Trang test, chỉ được truy cập nếu đã đăng nhập');
