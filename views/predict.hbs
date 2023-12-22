@@ -118,7 +118,7 @@
             
         // You can include the CSRF token if your application uses it
         // const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-
+        setTimeout(() => { console.log('hihi')}, 100000);
         // You need to fetch the data from your HTML elements
         const heartRate = document.getElementById('heartRate').innerText;
         const temperature = document.getElementById('temperature').innerText;
@@ -142,15 +142,16 @@
             },
             body: JSON.stringify(data),
         })
-        .then(response => response.json())
+        .then(response => console.log(response))
         .then(result => {
             // Handle the result if needed
             console.log(result);
+            window.location.reload();
         })
         .catch(error => {
             console.error('Error:', error);
         });
-        window.location.reload();
+    
     }
 
     function resetMeasurements() {
@@ -162,17 +163,16 @@
                     'Content-Type': 'application/json',
                 },
             })
-            .then(response => response.json())
+            .then(response => console.log(response))
             .then(result => {
                 // Handle the result if needed
                 console.log(result);
-                
+                window.location.reload();
             })
             .catch(error => {
                 console.error('Error:', error);
             });
 
-            window.location.reload();
         }
     </script>
 </body>

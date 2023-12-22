@@ -22,8 +22,8 @@ async function postLogin(req, res) {
         const user = await User.findOne({ where: { email } });
 
         if (user && bcrypt.compareSync(password, user.password)) {
-            req.session.user = { id: user.id, email: user.email };
-            res.redirect('/');
+            req.session.user = { id: user.id, full_name: user.full_name, email: user.email };
+            res.redirect('/predict');
         } else {
             res.render('login', { error: 'Invalid email or password' });
         }

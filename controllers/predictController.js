@@ -54,7 +54,7 @@ const saveMeasurement = async (req, res) => {
             await instance.update(data);
         }
 
-
+        res.redirect('back');
     } catch (error) {
         console.error('Error saving measurement:', error);
     }
@@ -82,6 +82,8 @@ async function resetMeasurements(req, res) {
                 where: { uid },
             }
         );
+
+        res.redirect('back');
 
     } catch (error) {
         console.error('Error resetting measurements:', error);
