@@ -9,11 +9,11 @@ const sequelize = require("./configs/connection");
 
 const userController = require('./controllers/authController');
 const auth = require('./middlewares/auth');
-const { indexPredict, saveMeasurement, resetMeasurements } = require('./controllers/predictController');
+const { indexPredict, saveMeasurement, resetMeasurements, getDataPredict } = require('./controllers/predictController');
 
 
 const app = express();
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT;
 
 // sử dụng public folder để lấy hình ảnh
 app.use(express.static('public'));
@@ -96,7 +96,8 @@ app.post('/signup', userController.postSignUp);
 app.get('/logout', userController.getLogout);
 app.get('/predict', auth, indexPredict);
 app.post('/measurements', auth, saveMeasurement);
-app.post('/resetMeasurements', auth, resetMeasurements)
+app.post('/resetMeasurements', auth, resetMeasurements);
+app.get('/getDataPredict', auth, getDataPredict);
 
 app.get('/test', auth, (req, res) => {
    res.send('Trang test, chỉ được truy cập nếu đã đăng nhập');

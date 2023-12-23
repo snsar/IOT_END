@@ -1,5 +1,22 @@
 const User = require('../models/User')
 const bcrypt = require('bcrypt');
+const nodemailer = require('nodemailer');
+require('dotenv').config();
+
+let mailTransporter = nodemailer.createTransport({
+    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false,
+    auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_CODE
+    },
+    tls: {
+        // do not fail on invalid certs
+        rejectUnauthorized: false
+    }
+});
 
 async function getAllUsers(req, res) {
     try {
@@ -59,6 +76,38 @@ async function postSignUp(req, res) {
             full_name,
             email,
             password, // You should hash the password before storing it in a real application
+        });
+        var content = '';
+        content += `
+            <div style="padding: 10px; background-color: #003375">
+                <div style="padding: 10px; background-color: white;">
+                    <h4 style="color: #0085ff">Tạo tài khoản thành công</h4>
+                    <span style="color: black">Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi!</span>
+                </div>
+                <div style="width: 100%; color: #c3dd73;">
+                    <p style="margin-top: 20px; font-size: 14px;">Best regards,</p>
+                    <p>QuyenLT</p>
+                </div>
+                
+            </div>
+        `;
+
+        let mailDetails = {
+            from: {
+                name: 'IOT TEAM',
+                address: process.env.GMAIL_USER
+            },
+            to: email,
+            subject: 'Tạo tài khoản thành công',
+            html: content,
+        };
+         
+        await mailTransporter.sendMail(mailDetails, function(err, data) {
+            if(err) {
+                console.log(err);
+            } else {
+                console.log('Email sent successfully');
+            }
         });
 
         // Redirect to a success page or login page

@@ -22,7 +22,7 @@ const Health = sequelize.define('Health', {
     heart_rate_3: DataTypes.FLOAT(3),
     spo2_3: DataTypes.FLOAT(3),
     predict_result: {
-        type: DataTypes.STRING(25),
+        type: DataTypes.STRING,
         allowNull: true
     },
     createdAt: {
