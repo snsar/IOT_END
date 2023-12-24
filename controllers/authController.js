@@ -82,7 +82,7 @@ async function postSignUp(req, res) {
             <div style="padding: 10px; background-color: #003375">
                 <div style="padding: 10px; background-color: white;">
                     <h4 style="color: #0085ff">Tạo tài khoản thành công</h4>
-                    <span style="color: black">Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi!</span>
+                    <span style="color: black">Cảm ơn ${full_name}, bạn đã sử dụng dịch vụ của chúng tôi!</span>
                 </div>
                 <div style="width: 100%; color: #c3dd73;">
                     <p style="margin-top: 20px; font-size: 14px;">Best regards,</p>

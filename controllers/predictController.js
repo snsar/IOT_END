@@ -175,8 +175,25 @@ const getDataPredict = async (req, res) => {
             <div style="padding: 10px; background-color: #003375">
                 <div style="padding: 10px; background-color: white;">
                     <h4 style="color: #0085ff">Tình trạng sức khoẻ của bạn được AI của tôi dự đoán!</h4>
-                    <h5 style="color: black">Kết quả: ${data_save_db}</h5>
-                    <span style="color: black">Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi ❤!</span>
+                    <h5 style="color: black">Kết quả:</h5>
+                    <div>
+                        <div>Lần 1:</div>
+                        <div>Nhiệt độ : ${data1.temperature_1} <sup>o</sup>C</div>
+                        <div>Nhịp tim: ${data1.heart_rate_1} bpm</div>
+                        <div>Nồng độ oxi: ${data1.spo2_1} %</div>
+                        
+                        <div style="padding-top: 10px">Lần 2:</div>
+                        <div>Nhiệt độ : ${data1.temperature_2} <sup>o</sup>C</div>
+                        <div>Nhịp tim: ${data1.heart_rate_2} bpm</div>
+                        <div>Nồng độ oxi: ${data1.spo2_2} %</div>
+
+                        <div style="padding-top: 10px">Lần 3:</div>
+                        <div>Nhiệt độ : ${data1.temperature_3} <sup>o</sup>C</div>
+                        <div>Nhịp tim: ${data1.heart_rate_3} bpm</div>
+                        <div>Nồng độ oxi: ${data1.spo2_3} %</div>
+                    </div>
+                    <h5 style="color: black">Chuẩn đoán: ${data_save_db}</h5>
+                    <span style="color: black">Cảm ơn ${req.session.user.full_name}, bạn đã sử dụng dịch vụ của chúng tôi ❤!</span>
                 </div>
                 <div style="width: 100%; color: #c3dd73;">
                     <p style="margin-top: 20px; font-size: 14px;">Best regards,</p>

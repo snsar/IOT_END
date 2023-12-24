@@ -52,7 +52,7 @@ void loop() {
     previousMillis = currentMillis;
 
     // Fake data for heart rate (random value between 80 and 120)
-    int heartRate = random(80, 121);
+    int heartRate = random(80, 140);
 
     // Fake data for spo2 (random value between 91 and 99)
     int spo2 = random(91, 100);
